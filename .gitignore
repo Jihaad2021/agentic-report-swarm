@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+
+# Environment files
+.env
+*.env
+*.secret
+
+# IDE configs
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Generated reports
+demos/example_reports/*
+!demos/example_reports/.gitkeep
+
+# OS files
+.DS_Store

@@ -1,7 +1,7 @@
 # tests/test_research_agent.py
 import pytest
-from src.superagent.agents.research import ResearchAgent
-from src.superagent.adapters.openai_adapter import MockOpenAIAdapter
+from agentic_report_swarm.agents.research import ResearchAgent
+from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter
 
 def test_research_agent_returns_structure():
     # create a mock adapter with a canned response (not used by current ResearchAgent but demonstrates injection)

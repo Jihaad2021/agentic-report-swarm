@@ -1,4 +1,4 @@
-from src.superagent.planner import Planner
+from agentic_report_swarm.core.planner import Planner
 
 planner = Planner()
 plan = planner.create_plan({

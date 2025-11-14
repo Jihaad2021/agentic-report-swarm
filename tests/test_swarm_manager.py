@@ -1,7 +1,7 @@
 # tests/test_swarm_manager.py
-from src.superagent.planner import Planner
-from src.superagent.swarm_manager import AgentFactory, SwarmManager
-from src.superagent.adapters.openai_adapter import MockOpenAIAdapter
+from agentic_report_swarm.core.planner import Planner
+from agentic_report_swarm.core.swarm_manager import AgentFactory, SwarmManager
+from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter
 
 def test_swarm_manager_runs_plan():
     planner = Planner()

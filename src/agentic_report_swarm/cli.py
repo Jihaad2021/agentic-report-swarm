@@ -8,8 +8,8 @@ Usage:
 
 import argparse
 import os
-from superagent.superagent import SuperAgent
-from superagent.adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
+from agentic_report_swarm.core.superagent import SuperAgent
+from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
 
 def build_adapters(mock: bool):
     if mock:

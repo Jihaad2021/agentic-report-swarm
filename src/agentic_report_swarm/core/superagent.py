@@ -18,7 +18,7 @@ from typing import Dict, Any
 from .planner import Planner
 from .swarm_manager import AgentFactory, SwarmManager
 from .aggregator import aggregate_results
-from .adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
+from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
 
 DEMO_REPORT_DIR = os.path.join(os.getcwd(), "demos", "example_reports")
 os.makedirs(DEMO_REPORT_DIR, exist_ok=True)

@@ -13,10 +13,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional
 import logging
 from .plan_schema import SubTask, SubtaskResult, Plan
-from .agents.research import ResearchAgent
-from .agents.trends import TrendsAgent
-from .agents.insights import InsightsAgent
-from .agents.writer import WriterAgent
+from agentic_report_swarm.agents.research import ResearchAgent
+from agentic_report_swarm.agents.trends import TrendsAgent
+from agentic_report_swarm.agents.insights import InsightsAgent
+from agentic_report_swarm.agents.writer import WriterAgent
 
 
 logger = logging.getLogger("SwarmManager")

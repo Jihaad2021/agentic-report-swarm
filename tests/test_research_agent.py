@@ -1,6 +1,6 @@
 # tests/test_research_agent.py
 import pytest
-from agentic_report_swarm.agents.research import ResearchAgent
+from agentic_report_swarm.agents.research_agent import ResearchAgent
 from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter
 
 def test_research_agent_returns_structure():

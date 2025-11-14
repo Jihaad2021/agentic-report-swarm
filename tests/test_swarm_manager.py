@@ -1,6 +1,6 @@
 # tests/test_swarm_manager.py
 from agentic_report_swarm.core.planner import Planner
-from agentic_report_swarm.core.swarm_manager import AgentFactory, SwarmManager
+from agentic_report_swarm.swarm.swarm_manager import AgentFactory, SwarmManager
 from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter
 
 def test_swarm_manager_runs_plan():

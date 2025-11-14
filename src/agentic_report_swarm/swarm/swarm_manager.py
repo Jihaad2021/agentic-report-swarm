@@ -12,11 +12,11 @@ Responsibilities:
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional
 import logging
-from .plan_schema import SubTask, SubtaskResult, Plan
-from agentic_report_swarm.agents.research import ResearchAgent
-from agentic_report_swarm.agents.trends import TrendsAgent
-from agentic_report_swarm.agents.insights import InsightsAgent
-from agentic_report_swarm.agents.writer import WriterAgent
+from ..core.plan_schema import SubTask, SubtaskResult, Plan
+from agentic_report_swarm.agents.research_agent import ResearchAgent
+from agentic_report_swarm.agents.trends_agent import TrendsAgent
+from agentic_report_swarm.agents.insights_agent import InsightsAgent
+from agentic_report_swarm.agents.writer_agent import WriterAgent
 
 
 logger = logging.getLogger("SwarmManager")

@@ -1,6 +1,6 @@
 # src/superagent/agents/writer.py
 from typing import Dict, Any, Optional
-from .base import BaseAgent
+from ..core.base_agent import BaseAgent
 
 class WriterAgent(BaseAgent):
     """

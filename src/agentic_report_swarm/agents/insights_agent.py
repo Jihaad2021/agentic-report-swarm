@@ -1,6 +1,6 @@
 # src/superagent/agents/insights.py
 from typing import Dict, Any, Optional
-from .base import BaseAgent
+from ..core.base_agent import BaseAgent
 
 class InsightsAgent(BaseAgent):
     """

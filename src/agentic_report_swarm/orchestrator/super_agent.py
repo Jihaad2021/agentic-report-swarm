@@ -15,9 +15,9 @@ Flow:
 import os
 import uuid
 from typing import Dict, Any
-from .planner import Planner
-from .swarm_manager import AgentFactory, SwarmManager
-from .aggregator import aggregate_results
+from ..core.planner import Planner
+from ..swarm.swarm_manager import AgentFactory, SwarmManager
+from ..core.aggregator import aggregate_results
 from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
 
 DEMO_REPORT_DIR = os.path.join(os.getcwd(), "demos", "example_reports")

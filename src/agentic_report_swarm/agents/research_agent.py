@@ -1,6 +1,6 @@
 # src/superagent/agents/research.py
 from typing import Dict, Any, Optional
-from .base import BaseAgent
+from ..core.base_agent import BaseAgent
 
 class ResearchAgent(BaseAgent):
     """

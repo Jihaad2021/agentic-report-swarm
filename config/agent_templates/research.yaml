@@ -1,0 +1,13 @@
+# config/agent_templates/research.yaml
+# Simple research prompt. Use {task.payload.topic} or {{ task.payload.topic }} in jinja2.
+prompt: |
+  You are an expert researcher. Produce a concise research overview for the topic:
+  "{{ task.payload.topic }}"
+
+  Requirements:
+  - Provide 3 key facts (bullet list).
+  - Provide 2 credible source suggestions (short).
+  - Output only markdown.
+
+  Context:
+  - Task ID: {{ task.id }}

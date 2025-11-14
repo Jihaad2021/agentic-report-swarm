@@ -1,62 +1,47 @@
-# src/superagent/superagent.py
-"""
-SuperAgent orchestrator (MVP).
+# src/agentic_report_swarm/orchestrator/super_agent.py
+from ..core.planner import simple_planner
+from ..factory.agent_factory import AgentFactory
+from ..swarm.swarm_manager import SwarmManager
+from typing import Optional
 
-Flow:
-- receive user command dict
-- create plan via Planner
-- create AgentFactory & SwarmManager (inject adapters / memory)
-- run plan => list of SubtaskResult
-- aggregate results => markdown
-- persist markdown to demos/example_reports/report-<plan_id>.md
-- return dict with metadata (path, plan_id)
-"""
+def aggregate_to_markdown(plan, results: dict) -> str:
+    """Build a simple markdown report from plan + results (order preserved)."""
+    parts = [f"# Research Report — {plan.topic}\n"]
+    for st in plan.subtasks:
+        parts.append(f"---\n### {st.type} (task {st.id})\n")
+        r = results.get(st.id)
+        if not r:
+            parts.append("_No result_\n")
+            continue
+        if r.get("success"):
+            out = r.get("output") or {}
+            text = out.get("text") if isinstance(out, dict) else str(out)
+            # fallback: convert whole output to string if no text field
+            if not text:
+                text = str(out)
+            parts.append(f"{text}\n")
+        else:
+            parts.append(f"**FAILED**: {r.get('error')}\n")
+    return "\n".join(parts)
 
-import os
-import uuid
-from typing import Dict, Any
-from ..core.planner import Planner
-from ..swarm.swarm_manager import AgentFactory, SwarmManager
-from ..core.aggregator import aggregate_results
-from agentic_report_swarm.adapters.openai_adapter import MockOpenAIAdapter, OpenAIAdapter
+def run_topic(topic: str, templates: Optional[dict] = None, llm_client=None) -> str:
+    """
+    Top-level pipeline:
+      - plan
+      - create factory (llm_client + templates)
+      - swarm execute
+      - aggregate -> markdown string
+    """
+    # 1. plan
+    plan = simple_planner(topic)
 
-DEMO_REPORT_DIR = os.path.join(os.getcwd(), "demos", "example_reports")
-os.makedirs(DEMO_REPORT_DIR, exist_ok=True)
+    # 2. setup factory (allow injecting llm_client / templates)
+    af = AgentFactory(llm_client=llm_client, templates=templates or {})
 
+    # 3. execute via swarm manager
+    swarm = SwarmManager(agent_factory=af)
+    results = swarm.execute_plan(plan)
 
-class SuperAgent:
-    def __init__(self, adapters: Dict[str, Any] = None, memory: Any = None, max_workers: int = 3):
-        self.adapters = adapters or {}
-        self.memory = memory
-        self.planner = Planner()
-        self.factory = AgentFactory(adapters=self.adapters, memory=self.memory)
-        self.manager = SwarmManager(factory=self.factory, max_workers=max_workers)
-
-    def run(self, command: Dict[str, Any], save: bool = True) -> Dict[str, Any]:
-        """
-        command: {
-            "topic": str,
-            "context": str (optional),
-            "audience": str (optional),
-            "length": "short" | "detailed"
-        }
-        """
-        # 1. plan
-        plan = self.planner.create_plan(command)
-
-        # 2. run swarm
-        results = self.manager.run_plan(plan, context={"user": command})
-
-        # 3. aggregate
-        metadata = {"plan_id": plan.plan_id, "topic": command.get("topic", ""), "n_tasks": len(plan.tasks)}
-        agg = aggregate_results(results, plan, metadata=metadata)
-        markdown = agg.get("markdown", "")
-
-        # 4. persist
-        report_filename = f"report-{plan.plan_id}.md"
-        report_path = os.path.join(DEMO_REPORT_DIR, report_filename)
-        if save:
-            with open(report_path, "w", encoding="utf-8") as f:
-                f.write(markdown)
-
-        return {"plan_id": plan.plan_id, "report_path": report_path, "markdown": markdown, "results": [r.__dict__ for r in results], "meta": metadata}
+    # 4. aggregate
+    md = aggregate_to_markdown(plan, results)
+    return md

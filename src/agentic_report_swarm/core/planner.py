@@ -1,73 +1,20 @@
-# src/superagent/planner.py
-"""
-Simple rule-based Planner for MVP.
-Takes user input -> generates a deterministic Plan with 4 subtasks.
-"""
-
-import uuid
-from typing import Dict, List
 from .plan_schema import Plan, SubTask
+import uuid
+from typing import List
 
-
-class Planner:
+def simple_planner(topic: str) -> Plan:
     """
-    Rule-based MVP Planner.
-
-    Later, this can be replaced by:
-    - LLM-based planner
-    - JSON-schema-based planning
-    - dynamic agent assignment
+    Rule-based planner that emits 4 subtasks in dependency order:
+      - research
+      - trends (depends on research)
+      - insights (depends on research + trends)
+      - writer (depends on insights)
     """
-
-    def __init__(self):
-        pass
-
-    def create_plan(self, user_input: Dict) -> Plan:
-        """
-        user_input = {
-            "topic": "...",
-            "context": "...",
-            "audience": "...",
-            "length": "short" | "detailed"
-        }
-        """
-        plan_id = f"plan-{uuid.uuid4().hex[:8]}"
-
-        topic = user_input.get("topic", "unknown topic")
-        length = user_input.get("length", "short")
-
-        tasks: List[SubTask] = []
-
-        # Task 1: Research overview
-        tasks.append(SubTask(
-            id="t1",
-            type="research_overview",
-            payload={"topic": topic, "depth": length},
-            deps=[]
-        ))
-
-        # Task 2: Identify Trends
-        tasks.append(SubTask(
-            id="t2",
-            type="identify_trends",
-            payload={"topic": topic, "n_trends": 3},
-            deps=[]
-        ))
-
-        # Task 3: Generate Insights
-        tasks.append(SubTask(
-            id="t3",
-            type="generate_insights",
-            payload={"topic": topic},
-            deps=["t1", "t2"]
-        ))
-
-        # Task 4: Write Final Report
-        tasks.append(SubTask(
-            id="t4",
-            type="write_report",
-            payload={"topic": topic, "length": length},
-            deps=["t1", "t2", "t3"]
-        ))
-
-        return Plan(plan_id=plan_id, tasks=tasks)
+    plan_id = str(uuid.uuid4())
+    subtasks: List[SubTask] = [
+        SubTask.make(type="research", payload={"topic": topic}, id="t1"),
+        SubTask.make(type="trends", payload={"topic": topic}, depends_on=["t1"], id="t2"),
+        SubTask.make(type="insights", payload={"topic": topic}, depends_on=["t1", "t2"], id="t3"),
+        SubTask.make(type="writer", payload={"topic": topic}, depends_on=["t3"], id="t4"),
+    ]
+    return Plan(plan_id=plan_id, topic=topic, subtasks=subtasks)

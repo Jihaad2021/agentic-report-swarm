@@ -4,9 +4,16 @@ from ..core.base_agent import BaseAgent
 from ..utils import prompt_loader
 from ..utils import llm_json
 
+# try import schemas MODEL_MAP if available
+try:
+    from ..schemas.schemas import MODEL_MAP, ValidationError as SchemaValidationError
+except Exception:
+    MODEL_MAP = {}
+    SchemaValidationError = Exception
+
 class GenericAgent(BaseAgent):
     """
-    Template-driven LLM-backed agent which will attempt to parse JSON responses.
+    Template-driven LLM-backed agent which will attempt to parse JSON responses and validate against schema.
     """
 
     def __init__(self, name: str, llm_client=None, template: Optional[Dict[str, Any]] = None, config: Dict[str, Any] = None):
@@ -39,7 +46,22 @@ class GenericAgent(BaseAgent):
         parsed = llm_json.parse_maybe_json(text)
 
         result: Dict[str, Any] = {"text": text, "meta": {"agent": self.name, "task_id": task.get("id")}}
+
         # If parsed is structured, include as `json` key for consumers
         if isinstance(parsed, (dict, list)):
             result["json"] = parsed
+            # Attempt schema validation if schema for task.type exists
+            schema_cls = MODEL_MAP.get(task.get("type"))
+            if schema_cls:
+                try:
+                    # pydantic will coerce/validate types; store validated model
+                    validated = schema_cls.parse_obj(parsed) if hasattr(schema_cls, "parse_obj") else schema_cls(**parsed)
+                    result["validated"] = True
+                    # attach model dict for downstream convenience
+                    result["validated_data"] = validated.dict() if hasattr(validated, "dict") else dict(validated)
+                except SchemaValidationError as e:
+                    # don't raise — record validation errors for debugging and fallback
+                    result["validated"] = False
+                    # store the stringified error; keep raw text/json
+                    result["validation_error"] = str(e)
         return result

@@ -1,13 +1,32 @@
-# config/agent_templates/research.yaml
-# Simple research prompt. Use {task.payload.topic} or {{ task.payload.topic }} in jinja2.
+# research.yaml
 prompt: |
-  You are an expert researcher. Produce a concise research overview for the topic:
-  "{{ task.payload.topic }}"
+  You are an expert researcher. Produce a concise research result for the topic "{{ task.payload.topic }}".
 
-  Requirements:
-  - Provide 3 key facts (bullet list).
-  - Provide 2 credible source suggestions (short).
-  - Output only markdown.
+  Output requirements (MANDATORY):
+  - Return exactly one JSON object and nothing else.
+  - The JSON MUST follow this schema:
+    {
+      "title": str,
+      "key_facts": [str],
+      "sources": [str],
+      "summary": str (optional)
+    }
 
-  Context:
+  Example valid output (do not include extra commentary):
+  {
+    "title": "Short title of the research",
+    "key_facts": [
+      "Fact 1",
+      "Fact 2",
+      "Fact 3"
+    ],
+    "sources": [
+      "Source A (short)",
+      "Source B (short)"
+    ],
+    "summary": "A one-paragraph summary (optional)"
+  }
+
+  Task meta:
   - Task ID: {{ task.id }}
+  - Topic: {{ task.payload.topic }}

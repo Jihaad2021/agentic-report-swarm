@@ -1,0 +1,26 @@
+# writer.yaml
+prompt: |
+  You are a professional report writer. Using the insights, compose a structured report for "{{ task.payload.topic }}".
+
+  Output requirements (MANDATORY):
+  - Return exactly one JSON object matching:
+    {
+      "sections": [
+        {"heading": str, "content": str}
+      ],
+      "metadata": {optional dict}
+    }
+  - Each section must have "heading" and "content".
+
+  Example:
+  {
+    "sections": [
+      {"heading": "Executive summary", "content": "Concise 2-3 sentences summary."},
+      {"heading": "Key findings", "content": "Bullet points or paragraphs."},
+      {"heading": "Recommendations", "content": "Actionable items."}
+    ],
+    "metadata": {"generated_by": "agentic-report-swarm", "topic": "{{ task.payload.topic }}"}
+  }
+
+  Task meta:
+  - Task ID: {{ task.id }}

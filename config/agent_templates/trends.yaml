@@ -1,0 +1,22 @@
+# trends.yaml
+prompt: |
+  You are a data-savvy analyst. Identify current trends for "{{ task.payload.topic }}".
+
+  Output requirements (MANDATORY):
+  - Return exactly one JSON object only.
+  - The JSON MUST follow this schema:
+    {
+      "trend_summary": str,
+      "top_trends": [str],
+      "timeframe": str (optional)
+    }
+
+  Example:
+  {
+    "trend_summary": "Short synthesis of top trends.",
+    "top_trends": ["trend A", "trend B", "trend C"],
+    "timeframe": "last 12 months"
+  }
+
+  Task meta:
+  - Task ID: {{ task.id }}
